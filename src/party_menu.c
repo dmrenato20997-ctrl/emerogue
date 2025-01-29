@@ -5238,7 +5238,7 @@ void ItemUseCB_StatusOrb(u8 taskId, TaskFunc task)
     u32 newStatus = STATUS1_NONE;
     if (item == ITEM_FLAME_ORB)
     {
-        if (oldStatus == STATUS1_ANY
+        if (!(oldStatus == STATUS1_NONE)
         || DoesAbilityPreventStatus(mon, STATUS1_BURN)
         || DoesTypePreventStatus(species, STATUS1_BURN))
         {
@@ -5254,7 +5254,7 @@ void ItemUseCB_StatusOrb(u8 taskId, TaskFunc task)
     {
         if (item == ITEM_TOXIC_ORB)
         {
-            if (oldStatus == STATUS1_ANY
+            if (!(oldStatus == STATUS1_NONE)
             || DoesAbilityPreventStatus(mon, STATUS1_TOXIC_POISON)
             || DoesTypePreventStatus(species, STATUS1_TOXIC_POISON))
             {
