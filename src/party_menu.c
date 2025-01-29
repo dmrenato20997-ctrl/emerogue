@@ -544,6 +544,79 @@ static bool32 CannotUsePartyBattleItem(u16 itemId, struct Pokemon* mon);
 // static const data
 #include "data/party_menu.h"
 
+// ability data for DoesAbilityPreventStatus
+#include "constants/abilities.h"
+
+// functions taken from "battle_pike.c"
+static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
+{
+    u16 ability = GetMonAbility(mon);
+    bool8 ret = FALSE;
+
+    if (ability == ABILITY_COMATOSE || ability == ABILITY_PURIFYING_SALT)
+        return TRUE;
+
+    switch (status)
+    {
+    case STATUS1_FREEZE:
+        if (ability == ABILITY_MAGMA_ARMOR)
+            ret = TRUE;
+        break;
+    case STATUS1_FROSTBITE:
+        if (ability == ABILITY_MAGMA_ARMOR)
+            ret = TRUE;
+        break;
+    case STATUS1_BURN:
+        if (ability == ABILITY_WATER_VEIL || ability == ABILITY_WATER_BUBBLE || ability == ABILITY_THERMAL_EXCHANGE)
+            ret = TRUE;
+        break;
+    case STATUS1_PARALYSIS:
+        if (ability == ABILITY_LIMBER)
+            ret = TRUE;
+        break;
+    case STATUS1_SLEEP:
+        if (ability == ABILITY_INSOMNIA || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_SWEET_VEIL)
+            ret = TRUE;
+        break;
+    case STATUS1_TOXIC_POISON:
+        if (ability == ABILITY_IMMUNITY || ability == ABILITY_PASTEL_VEIL)
+            ret = TRUE;
+        break;
+    }
+    return ret;
+}
+
+static bool8 DoesTypePreventStatus(u16 species, u32 status)
+{
+    bool8 ret = FALSE;
+
+    switch (status)
+    {
+    case STATUS1_TOXIC_POISON:
+        if (gSpeciesInfo[species].types[0] == TYPE_STEEL || gSpeciesInfo[species].types[0] == TYPE_POISON
+            || gSpeciesInfo[species].types[1] == TYPE_STEEL || gSpeciesInfo[species].types[1] == TYPE_POISON)
+            ret = TRUE;
+        break;
+    case STATUS1_FREEZE:
+    case STATUS1_FROSTBITE:
+        if (gSpeciesInfo[species].types[0] == TYPE_ICE || gSpeciesInfo[species].types[1] == TYPE_ICE)
+            ret = TRUE;
+        break;
+    case STATUS1_PARALYSIS:
+        if (gSpeciesInfo[species].types[0] == TYPE_GROUND || gSpeciesInfo[species].types[1] == TYPE_GROUND
+            || (B_PARALYZE_ELECTRIC >= GEN_6 && (gSpeciesInfo[species].types[0] == TYPE_ELECTRIC || gSpeciesInfo[species].types[1] == TYPE_ELECTRIC)))
+            ret = TRUE;
+        break;
+    case STATUS1_BURN:
+        if (gSpeciesInfo[species].types[0] == TYPE_FIRE || gSpeciesInfo[species].types[1] == TYPE_FIRE)
+            ret = TRUE;
+        break;
+    case STATUS1_SLEEP:
+        break;
+    }
+    return ret;
+}
+
 // code
 static void InitPartyMenu(u8 menuType, u8 layout, u8 partyAction, bool8 keepCursorPos, u8 messageId, TaskFunc task, MainCallback callback)
 {
@@ -5152,6 +5225,80 @@ void ItemUseCB_Medicine(u8 taskId, TaskFunc task)
             else
                 gTasks[taskId].func = task;
         }
+    }
+}
+
+void ItemUseCB_StatusOrb(u8 taskId, TaskFunc task)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    u16 item = gSpecialVar_ItemId;
+    u32 oldStatus = GetMonData(mon, MON_DATA_STATUS);
+    u16 species = GetMonData(mon, MON_DATA_SPECIES);
+    bool8 cannotUse;
+    u32 newStatus = STATUS1_NONE;
+    if (item == ITEM_FLAME_ORB)
+    {
+        if (oldStatus == STATUS1_ANY
+        || DoesAbilityPreventStatus(mon, STATUS1_BURN)
+        || DoesTypePreventStatus(species, STATUS1_BURN))
+        {
+            cannotUse = TRUE;
+        }
+        else
+        {
+            cannotUse = FALSE;
+            newStatus = STATUS1_BURN;
+        }
+    }
+    else
+    {
+        if (item == ITEM_TOXIC_ORB)
+        {
+            if (oldStatus == STATUS1_ANY
+            || DoesAbilityPreventStatus(mon, STATUS1_TOXIC_POISON)
+            || DoesTypePreventStatus(species, STATUS1_TOXIC_POISON))
+            {
+                cannotUse = TRUE;
+            }
+            else
+            {
+                cannotUse = FALSE;
+                newStatus = STATUS1_TOXIC_POISON;
+            }
+        }
+        else
+        {
+          cannotUse = TRUE;  
+        }
+    }
+    
+    if (cannotUse != FALSE)
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        if ((gPartyMenu.menuType == PARTY_MENU_TYPE_FIELD || gPartyMenu.menuType == PARTY_MENU_TYPE_USE_NATURE_MINT)&& CheckBagHasItem(item, 1))
+            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        else
+            gTasks[taskId].func = task;
+        return;
+    }
+    else
+    {
+        gPartyMenuUseExitCallback = TRUE;
+        SetPartyMonAilmentGfx(mon, &sPartyMenuBoxes[gPartyMenu.slotId]);
+        if (gSprites[sPartyMenuBoxes[gPartyMenu.slotId].statusSpriteId].invisible)
+            DisplayPartyPokemonLevelCheck(mon, &sPartyMenuBoxes[gPartyMenu.slotId], 1);
+        GetMonNickname(mon, gStringVar1);
+        GetMedicineItemEffectMessage(item, oldStatus);
+        SetMonData(mon, MON_DATA_STATUS, &newStatus);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+            if ((gPartyMenu.menuType == PARTY_MENU_TYPE_FIELD || gPartyMenu.menuType == PARTY_MENU_TYPE_USE_NATURE_MINT) && CheckBagHasItem(item, 1))
+            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        else
+            gTasks[taskId].func = task;
     }
 }
 
