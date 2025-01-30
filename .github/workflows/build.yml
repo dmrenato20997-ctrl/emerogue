@@ -67,20 +67,20 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-            name: Personnel_Rogue
-            path: Personnel_Rogue.gba
+            name: emeraldrogue
+            path: emeraldrogue.gba
             retention-days: 1
   
       - uses: actions/upload-artifact@v4
         with:
-            name: Personnel_Rogue_elf
-            path: Personnel_Rogue.elf
+            name: emeraldrogue_elf
+            path: emeraldrogue.elf
             retention-days: 1
             
       - uses: actions/upload-artifact@v4
         with:
-            name: Personnel_Rogue_map
-            path: Personnel_Rogue.map
+            name: emeraldrogue_map
+            path: emeraldrogue.map
             retention-days: 1
 
             ## what's below can be removed if ever build from github again
