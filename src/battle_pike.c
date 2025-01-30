@@ -815,18 +815,21 @@ static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
     u16 ability = GetMonAbility(mon);
     bool8 ret = FALSE;
 
-    if (ability == ABILITY_COMATOSE)
+    if (ability == ABILITY_COMATOSE || ability == ABILITY_PURIFYING_SALT)
         return TRUE;
 
     switch (status)
     {
     case STATUS1_FREEZE:
+        if (ability == ABILITY_MAGMA_ARMOR)
+            ret = TRUE;
+        break;
     case STATUS1_FROSTBITE:
         if (ability == ABILITY_MAGMA_ARMOR)
             ret = TRUE;
         break;
     case STATUS1_BURN:
-        if (ability == ABILITY_WATER_VEIL || ability == ABILITY_WATER_BUBBLE)
+        if (ability == ABILITY_WATER_VEIL || ability == ABILITY_WATER_BUBBLE || ability == ABILITY_THERMAL_EXCHANGE)
             ret = TRUE;
         break;
     case STATUS1_PARALYSIS:
@@ -834,7 +837,7 @@ static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
             ret = TRUE;
         break;
     case STATUS1_SLEEP:
-        if (ability == ABILITY_INSOMNIA || ability == ABILITY_VITAL_SPIRIT)
+        if (ability == ABILITY_INSOMNIA || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_SWEET_VEIL)
             ret = TRUE;
         break;
     case STATUS1_TOXIC_POISON:
@@ -875,6 +878,7 @@ static bool8 DoesTypePreventStatus(u16 species, u32 status)
     }
     return ret;
 }
+
 
 static bool8 TryInflictRandomStatus(void)
 {

@@ -5457,7 +5457,7 @@ const struct Item gItems[] =
         .description = sToxicOrbDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_StatusOr,
+        .fieldUseFunc = ItemUseOutOfBattle_StatusOrb,
         .flingPower = 30,
     },
 

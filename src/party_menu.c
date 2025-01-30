@@ -82,6 +82,8 @@
 #include "rogue_pokedex.h"
 #include "rogue_quest.h"
 
+#include "src/battle_pike.c" // functions for checking if pokemon is eligible for status
+
 enum {
     MENU_SUMMARY,
     MENU_SWITCH,
@@ -543,79 +545,6 @@ static bool32 CannotUsePartyBattleItem(u16 itemId, struct Pokemon* mon);
 
 // static const data
 #include "data/party_menu.h"
-
-// ability data for DoesAbilityPreventStatus
-#include "constants/abilities.h"
-
-// functions taken from "battle_pike.c"
-static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
-{
-    u16 ability = GetMonAbility(mon);
-    bool8 ret = FALSE;
-
-    if (ability == ABILITY_COMATOSE || ability == ABILITY_PURIFYING_SALT)
-        return TRUE;
-
-    switch (status)
-    {
-    case STATUS1_FREEZE:
-        if (ability == ABILITY_MAGMA_ARMOR)
-            ret = TRUE;
-        break;
-    case STATUS1_FROSTBITE:
-        if (ability == ABILITY_MAGMA_ARMOR)
-            ret = TRUE;
-        break;
-    case STATUS1_BURN:
-        if (ability == ABILITY_WATER_VEIL || ability == ABILITY_WATER_BUBBLE || ability == ABILITY_THERMAL_EXCHANGE)
-            ret = TRUE;
-        break;
-    case STATUS1_PARALYSIS:
-        if (ability == ABILITY_LIMBER)
-            ret = TRUE;
-        break;
-    case STATUS1_SLEEP:
-        if (ability == ABILITY_INSOMNIA || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_SWEET_VEIL)
-            ret = TRUE;
-        break;
-    case STATUS1_TOXIC_POISON:
-        if (ability == ABILITY_IMMUNITY || ability == ABILITY_PASTEL_VEIL)
-            ret = TRUE;
-        break;
-    }
-    return ret;
-}
-
-static bool8 DoesTypePreventStatus(u16 species, u32 status)
-{
-    bool8 ret = FALSE;
-
-    switch (status)
-    {
-    case STATUS1_TOXIC_POISON:
-        if (gSpeciesInfo[species].types[0] == TYPE_STEEL || gSpeciesInfo[species].types[0] == TYPE_POISON
-            || gSpeciesInfo[species].types[1] == TYPE_STEEL || gSpeciesInfo[species].types[1] == TYPE_POISON)
-            ret = TRUE;
-        break;
-    case STATUS1_FREEZE:
-    case STATUS1_FROSTBITE:
-        if (gSpeciesInfo[species].types[0] == TYPE_ICE || gSpeciesInfo[species].types[1] == TYPE_ICE)
-            ret = TRUE;
-        break;
-    case STATUS1_PARALYSIS:
-        if (gSpeciesInfo[species].types[0] == TYPE_GROUND || gSpeciesInfo[species].types[1] == TYPE_GROUND
-            || (B_PARALYZE_ELECTRIC >= GEN_6 && (gSpeciesInfo[species].types[0] == TYPE_ELECTRIC || gSpeciesInfo[species].types[1] == TYPE_ELECTRIC)))
-            ret = TRUE;
-        break;
-    case STATUS1_BURN:
-        if (gSpeciesInfo[species].types[0] == TYPE_FIRE || gSpeciesInfo[species].types[1] == TYPE_FIRE)
-            ret = TRUE;
-        break;
-    case STATUS1_SLEEP:
-        break;
-    }
-    return ret;
-}
 
 // code
 static void InitPartyMenu(u8 menuType, u8 layout, u8 partyAction, bool8 keepCursorPos, u8 messageId, TaskFunc task, MainCallback callback)
@@ -5029,6 +4958,12 @@ static void GetMedicineItemEffectMessage(u16 item, u32 statusCured)
     case ITEM_EFFECT_HEAL_PP:
         StringExpandPlaceholders(gStringVar4, gText_PPWasRestored);
         break;
+    case ITEM_EFFECT_GIVE_BURN:
+        StringExpandPlaceholders(gStringVar4, gText_PkmnWasBurned);
+        break;
+    case ITEM_EFFECT_GIVE_POISON:
+        StringExpandPlaceholders(gStringVar4, gText_PkmnWasPoisoned);
+        break;
     default:
         StringExpandPlaceholders(gStringVar4, gText_WontHaveEffect);
         break;
@@ -5119,6 +5054,11 @@ static bool32 CannotUsePartyBattleItem(u16 itemId, struct Pokemon* mon)
         {
             cannotUse++;
         }
+    }
+    // Items that give status (Toxic Orb, Flame Orb)
+    if (battleUsage == EFFECT_ITEM_GIVE_STATUS)
+    {
+        return TRUE;
     }
     return cannotUse;
 }
@@ -5234,45 +5174,16 @@ void ItemUseCB_StatusOrb(u8 taskId, TaskFunc task)
     u16 item = gSpecialVar_ItemId;
     u32 oldStatus = GetMonData(mon, MON_DATA_STATUS);
     u16 species = GetMonData(mon, MON_DATA_SPECIES);
-    bool8 cannotUse;
-    u32 newStatus = STATUS1_NONE;
-    if (item == ITEM_FLAME_ORB)
+    u32 newStatus = SetItemStatus(item);
+
+    if (!(oldStatus == STATUS1_NONE)
+    || DoesAbilityPreventStatus(mon, newStatus)
+    || DoesTypePreventStatus(species, newStatus))
     {
-        if (!(oldStatus == STATUS1_NONE)
-        || DoesAbilityPreventStatus(mon, STATUS1_BURN)
-        || DoesTypePreventStatus(species, STATUS1_BURN))
-        {
-            cannotUse = TRUE;
-        }
-        else
-        {
-            cannotUse = FALSE;
-            newStatus = STATUS1_BURN;
-        }
+        newStatus = STATUS1_NONE;
     }
-    else
-    {
-        if (item == ITEM_TOXIC_ORB)
-        {
-            if (!(oldStatus == STATUS1_NONE)
-            || DoesAbilityPreventStatus(mon, STATUS1_TOXIC_POISON)
-            || DoesTypePreventStatus(species, STATUS1_TOXIC_POISON))
-            {
-                cannotUse = TRUE;
-            }
-            else
-            {
-                cannotUse = FALSE;
-                newStatus = STATUS1_TOXIC_POISON;
-            }
-        }
-        else
-        {
-          cannotUse = TRUE;  
-        }
-    }
-    
-    if (cannotUse != FALSE)
+
+    if (newStatus == STATUS1_NONE)
     {
         gPartyMenuUseExitCallback = FALSE;
         PlaySE(SE_SELECT);
@@ -5287,12 +5198,12 @@ void ItemUseCB_StatusOrb(u8 taskId, TaskFunc task)
     else
     {
         gPartyMenuUseExitCallback = TRUE;
+        SetMonData(mon, MON_DATA_STATUS, &newStatus);
         SetPartyMonAilmentGfx(mon, &sPartyMenuBoxes[gPartyMenu.slotId]);
         if (gSprites[sPartyMenuBoxes[gPartyMenu.slotId].statusSpriteId].invisible)
             DisplayPartyPokemonLevelCheck(mon, &sPartyMenuBoxes[gPartyMenu.slotId], 1);
         GetMonNickname(mon, gStringVar1);
         GetMedicineItemEffectMessage(item, oldStatus);
-        SetMonData(mon, MON_DATA_STATUS, &newStatus);
         DisplayPartyMenuMessage(gStringVar4, TRUE);
         ScheduleBgCopyTilemapToVram(2);
             if ((gPartyMenu.menuType == PARTY_MENU_TYPE_FIELD || gPartyMenu.menuType == PARTY_MENU_TYPE_USE_NATURE_MINT) && CheckBagHasItem(item, 1))
@@ -7611,6 +7522,15 @@ u8 GetItemEffectType(u16 item)
             return ITEM_EFFECT_CURE_ALL_STATUS;
     }
 
+    statusCure = itemEffect[3] & ITEM3_GIVE_STATUS_ALL; //no reason to declare a second variable with a perfectly good one here
+    if (statusCure)
+    {
+        if (statusCure == ITEM3_GIVE_BURN)
+            return ITEM_EFFECT_GIVE_BURN;
+        if (statusCure == ITEM3_GIVE_POISON)
+            return ITEM_EFFECT_GIVE_POISON;
+    }
+
     if (itemEffect[4] & (ITEM4_REVIVE | ITEM4_HEAL_HP))
         return ITEM_EFFECT_HEAL_HP;
     else if (itemEffect[4] & ITEM4_EV_ATK)
@@ -8767,4 +8687,17 @@ void IsLastMonThatKnowsSurf(void)
         if (AnyStorageMonWithMove(move) != TRUE)
             gSpecialVar_Result = TRUE;
     }
+}
+
+u32 SetItemStatus (u16 item)
+{
+    const u8 *itemEffectType = GetItemEffectType(item);
+
+    if (itemEffectType == ITEM_EFFECT_GIVE_BURN)
+        return STATUS1_BURN;
+
+    if (itemEffectType == ITEM_EFFECT_GIVE_BURN)
+        return STATUS1_BURN;
+
+    return STATUS1_NONE;
 }
