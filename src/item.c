@@ -1482,3 +1482,22 @@ u32 GetItemStatus2Mask(u16 itemId)
     else
         return 0;
 }
+
+u32 GetItemStatus3Mask (u16 item) //diferent from GetItemStatus1Mask as it needs to return a single value
+{
+    const u8 *effect = GetItemEffect(itemId);
+    switch (effect[3])
+    {
+        //case ITEM3_PARALYSIS: //commenting out statuses that don't currently have an associated orb
+        //    return STATUS1_PARALYSIS;
+        //case ITEM3_FREEZE:
+        //    return  B_USE_FROSTBITE ? STATUS1_FROSTBITE: STATUS1_FREEZE;  // Test this if it becomes used
+        case ITEM3_BURN:
+            return STATUS1_BURN;
+        case ITEM3_POISON:
+            return STATUS1_POISON
+        //case ITEM3_SLEEP:
+        //    return STATUS1_SLEEP;
+    }
+    return 0;
+}

@@ -68,12 +68,6 @@
 #define ITEM6_ADD_ONE_EV    1
 #define ITEM6_RESET_EV      0
 
-// Using field 7 despite other use, should only matter if you manage to use a berry with the fieldUseFunc of ItemUseOutOfBattle_StatusOrb or vice versa
-#define ITEM7_GIVE_BURN         0x1
-#define ITEM7_GIVE_POISON       0x2
-
-#define ITEM7_GIVE_STATUS_ALL   (ITEM7_GIVE_BURN | ITEM7_GIVE_POISON)
-
 // Used for GetItemEffectType.
 #define ITEM_EFFECT_X_ITEM 0
 #define ITEM_EFFECT_RAISE_LEVEL 1

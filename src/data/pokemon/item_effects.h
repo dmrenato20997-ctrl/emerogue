@@ -494,12 +494,12 @@ const u8 gItemEffect_TamatoBerry[10] = {
     EV_BERRY_FRIENDSHIP_CHANGE,
 };
 
-const u8 gItemEffect_FlameOrb[10] = {
-    [7] = ITEM7_GIVE_BURN ,
+const u8 gItemEffect_FlameOrb[6] = {
+    [3] = ITEM3_BURN ,
 };
 
-const u8 gItemEffect_ToxicOrb[10] = {
-    [7] = ITEM7_GIVE_POISON,
+const u8 gItemEffect_ToxicOrb[6] = {
+    [3] = ITEM3_POISON,
 };
 
 const u8 *const gItemEffectTable[ITEMS_COUNT] =

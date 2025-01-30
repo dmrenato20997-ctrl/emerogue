@@ -5244,7 +5244,7 @@ void ItemUseCB_StatusOrb(u8 taskId, TaskFunc task)
     u16 item = gSpecialVar_ItemId;
     u32 oldStatus = GetMonData(mon, MON_DATA_STATUS);
     u16 species = GetMonData(mon, MON_DATA_SPECIES);
-    u32 newStatus = SetItemStatus(item);
+    u32 newStatus = GetItemStatus3Mask(item);
 
     if (!(oldStatus == STATUS1_NONE)
     || DoesAbilityPreventStatus(mon, newStatus)
@@ -7559,7 +7559,7 @@ const u8* GetItemEffect(u16 item)
 u8 GetItemEffectType(u16 item)
 {
     u32 statusCure;
-    u32 statusGive;
+    u16 battleUsage = ItemId_GetBattleUsage(item);
     const u8 *itemEffect = GetItemEffect(item);
 
     if (itemEffect == NULL)
@@ -7573,6 +7573,15 @@ u8 GetItemEffectType(u16 item)
         return ITEM_EFFECT_RAISE_LEVEL;
 
     statusCure = itemEffect[3] & ITEM3_STATUS_ALL;
+    
+    if (statusCure && battleUsage == EFFECT_ITEM_GIVE_STATUS)
+    {
+        if (statusCure == ITEM3_BURN)
+            return ITEM_EFFECT_GIVE_BURN;
+        else if (statusCure == ITEM3_POISON)
+            return ITEM_EFFECT_GIVE_POISON;
+    }
+
     if (statusCure || (itemEffect[0] >> 7))
     {
         if (statusCure == ITEM3_SLEEP)
@@ -7591,15 +7600,6 @@ u8 GetItemEffectType(u16 item)
             return ITEM_EFFECT_CURE_INFATUATION;
         else
             return ITEM_EFFECT_CURE_ALL_STATUS;
-    }
-
-    statusGive = itemEffect[7] & ITEM7_GIVE_STATUS_ALL;
-    if (statusCure)
-    {
-        if (statusCure == ITEM7_GIVE_BURN)
-            return ITEM_EFFECT_GIVE_BURN;
-        else if (statusCure == ITEM7_GIVE_POISON)
-            return ITEM_EFFECT_GIVE_POISON;
     }
 
     if (itemEffect[4] & (ITEM4_REVIVE | ITEM4_HEAL_HP))
@@ -8758,17 +8758,4 @@ void IsLastMonThatKnowsSurf(void)
         if (AnyStorageMonWithMove(move) != TRUE)
             gSpecialVar_Result = TRUE;
     }
-}
-
-u32 SetItemStatus (u16 item)
-{
-    u8 itemEffect = GetItemEffectType(item);
-
-    if (itemEffect == ITEM_EFFECT_GIVE_BURN)
-        return STATUS1_BURN;
-
-    if (itemEffect == ITEM_EFFECT_GIVE_POISON)
-        return STATUS1_TOXIC_POISON;
-
-    return STATUS1_NONE;
 }
