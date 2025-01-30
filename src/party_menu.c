@@ -577,7 +577,7 @@ static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
         if (ability == ABILITY_INSOMNIA || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_SWEET_VEIL)
             ret = TRUE;
         break;
-    case STATUS1_TOXIC_POISON:
+    case STATUS1_TOXIC_POISON || STATUS1_POISON:
         if (ability == ABILITY_IMMUNITY || ability == ABILITY_PASTEL_VEIL)
             ret = TRUE;
         break;
@@ -591,7 +591,7 @@ static bool8 DoesTypePreventStatus(u16 species, u32 status)
 
     switch (status)
     {
-    case STATUS1_TOXIC_POISON:
+    case STATUS1_TOXIC_POISON || STATUS1_POISON:
         if (gSpeciesInfo[species].types[0] == TYPE_STEEL || gSpeciesInfo[species].types[0] == TYPE_POISON
             || gSpeciesInfo[species].types[1] == TYPE_STEEL || gSpeciesInfo[species].types[1] == TYPE_POISON)
             ret = TRUE;
