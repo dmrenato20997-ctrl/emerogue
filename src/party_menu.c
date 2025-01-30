@@ -8691,12 +8691,12 @@ void IsLastMonThatKnowsSurf(void)
 
 u32 SetItemStatus (u16 item)
 {
-    const u8 *itemEffectType = GetItemEffectType(item);
+    const u8 itemEffect = GetItemEffectType(item);
 
-    if (itemEffectType == ITEM_EFFECT_GIVE_BURN)
+    if (itemEffect == ITEM_EFFECT_GIVE_BURN)
         return STATUS1_BURN;
 
-    if (itemEffectType == ITEM_EFFECT_GIVE_BURN)
+    if (itemEffect == ITEM_EFFECT_GIVE_BURN)
         return STATUS1_BURN;
 
     return STATUS1_NONE;

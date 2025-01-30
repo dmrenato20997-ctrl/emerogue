@@ -610,6 +610,8 @@ extern const u8 gText_SpDef[];
 extern const u8 gText_Speed[];
 extern const u8 gText_Dash[];
 extern const u8 gText_Plus[];
+extern const u8 gText_PkmnWasBurned[];
+extern const u8 gText_PkmnWasPoisoned[];
 
 //pokedex text
 extern const u8 gText_CryOf[];
