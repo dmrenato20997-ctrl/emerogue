@@ -19,12 +19,12 @@
 #define ITEM3_PARALYSIS         0x2
 #define ITEM3_FREEZE            0x4
 #define ITEM3_BURN              0x8
-#define ITEM3_GIVE_BURN         0x9 //giving them the id of status +1 as there is space to do so for every non-volatile status
 #define ITEM3_POISON            0x10
-#define ITEM3_GIVE_POISON       0x11
 #define ITEM3_SLEEP             0x20
 #define ITEM3_LEVEL_UP          0x40
 #define ITEM3_GUARD_SPEC        0x80 // Works the same way as the move Mist.
+#define ITEM3_GIVE_BURN         0x100
+#define ITEM3_GIVE_POISON       0x200
 
 #define ITEM3_STATUS_ALL        (ITEM3_CONFUSION | ITEM3_PARALYSIS | ITEM3_FREEZE | ITEM3_BURN | ITEM3_POISON | ITEM3_SLEEP)
 #define ITEM3_GIVE_STATUS_ALL   (ITEM3_GIVE_BURN | ITEM3_GIVE_POISON)
