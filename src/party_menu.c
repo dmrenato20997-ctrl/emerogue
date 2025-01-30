@@ -8703,7 +8703,7 @@ u32 SetItemStatus (u16 item)
 }
 
 // taken and updated from battle_pike.c
-static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
+bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
 {
     u16 ability = GetMonAbility(mon);
     bool8 ret = FALSE;
@@ -8741,7 +8741,7 @@ static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
     return ret;
 }
 
-static bool8 DoesTypePreventStatus(u16 species, u32 status)
+bool8 DoesTypePreventStatus(u16 species, u32 status)
 {
     bool8 ret = FALSE;
 
