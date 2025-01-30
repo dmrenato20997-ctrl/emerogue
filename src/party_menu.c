@@ -5273,7 +5273,7 @@ void ItemUseCB_StatusOrb(u8 taskId, TaskFunc task)
         if (gSprites[sPartyMenuBoxes[gPartyMenu.slotId].statusSpriteId].invisible)
             DisplayPartyPokemonLevelCheck(mon, &sPartyMenuBoxes[gPartyMenu.slotId], 1);
         GetMonNickname(mon, gStringVar1);
-        GetMedicineItemEffectMessage(item, oldStatus);
+        GetMedicineItemEffectMessage(item, 0);
         DisplayPartyMenuMessage(gStringVar4, TRUE);
         ScheduleBgCopyTilemapToVram(2);
             if ((gPartyMenu.menuType == PARTY_MENU_TYPE_FIELD || gPartyMenu.menuType == PARTY_MENU_TYPE_USE_NATURE_MINT) && CheckBagHasItem(item, 1))
@@ -7559,6 +7559,7 @@ const u8* GetItemEffect(u16 item)
 u8 GetItemEffectType(u16 item)
 {
     u32 statusCure;
+    u32 statusGive;
     const u8 *itemEffect = GetItemEffect(item);
 
     if (itemEffect == NULL)
@@ -7592,12 +7593,12 @@ u8 GetItemEffectType(u16 item)
             return ITEM_EFFECT_CURE_ALL_STATUS;
     }
 
-    statusCure = itemEffect[3] & ITEM3_GIVE_STATUS_ALL; //no reason to declare a second variable with a perfectly good one here
+    statusGive = itemEffect[3] & ITEM3_GIVE_STATUS_ALL;
     if (statusCure)
     {
         if (statusCure == ITEM3_GIVE_BURN)
             return ITEM_EFFECT_GIVE_BURN;
-        if (statusCure == ITEM3_GIVE_POISON)
+        else if (statusCure == ITEM3_GIVE_POISON)
             return ITEM_EFFECT_GIVE_POISON;
     }
 
@@ -8766,8 +8767,8 @@ u32 SetItemStatus (u16 item)
     if (itemEffect == ITEM_EFFECT_GIVE_BURN)
         return STATUS1_BURN;
 
-    if (itemEffect == ITEM_EFFECT_GIVE_BURN)
-        return STATUS1_BURN;
+    if (itemEffect == ITEM_EFFECT_GIVE_POISON)
+        return STATUS1_TOXIC_POISON;
 
     return STATUS1_NONE;
 }
