@@ -23,11 +23,8 @@
 #define ITEM3_SLEEP             0x20
 #define ITEM3_LEVEL_UP          0x40
 #define ITEM3_GUARD_SPEC        0x80 // Works the same way as the move Mist.
-#define ITEM3_GIVE_BURN         0x100
-#define ITEM3_GIVE_POISON       0x200
 
 #define ITEM3_STATUS_ALL        (ITEM3_CONFUSION | ITEM3_PARALYSIS | ITEM3_FREEZE | ITEM3_BURN | ITEM3_POISON | ITEM3_SLEEP)
-#define ITEM3_GIVE_STATUS_ALL   (ITEM3_GIVE_BURN | ITEM3_GIVE_POISON)
 
 // field 4 masks
 #define ITEM4_EV_HP             0x1
@@ -70,6 +67,12 @@
 #define ITEM6_SUBTRACT_EV -10
 #define ITEM6_ADD_ONE_EV    1
 #define ITEM6_RESET_EV      0
+
+// Colonising field 7 as it appears otherwise unused
+#define ITEM7_GIVE_BURN         0x1
+#define ITEM7_GIVE_POISON       0x2
+
+#define ITEM7_GIVE_STATUS_ALL   (ITEM7_GIVE_BURN | ITEM7_GIVE_POISON)
 
 // Used for GetItemEffectType.
 #define ITEM_EFFECT_X_ITEM 0

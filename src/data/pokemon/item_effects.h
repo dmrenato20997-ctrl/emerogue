@@ -495,11 +495,11 @@ const u8 gItemEffect_TamatoBerry[10] = {
 };
 
 const u8 gItemEffect_FlameOrb[6] = {
-    [3] = ITEM3_GIVE_BURN ,
+    [3] = ITEM7_GIVE_BURN ,
 };
 
 const u8 gItemEffect_ToxicOrb[6] = {
-    [3] = ITEM3_GIVE_POISON,
+    [3] = ITEM7_GIVE_POISON,
 };
 
 const u8 *const gItemEffectTable[ITEMS_COUNT] =

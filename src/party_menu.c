@@ -7593,12 +7593,12 @@ u8 GetItemEffectType(u16 item)
             return ITEM_EFFECT_CURE_ALL_STATUS;
     }
 
-    statusGive = itemEffect[3] & ITEM3_GIVE_STATUS_ALL;
+    statusGive = itemEffect[7] & ITEM7_GIVE_STATUS_ALL;
     if (statusCure)
     {
-        if (statusCure == ITEM3_GIVE_BURN)
+        if (statusCure == ITEM7_GIVE_BURN)
             return ITEM_EFFECT_GIVE_BURN;
-        else if (statusCure == ITEM3_GIVE_POISON)
+        else if (statusCure == ITEM7_GIVE_POISON)
             return ITEM_EFFECT_GIVE_POISON;
     }
 
