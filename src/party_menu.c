@@ -546,6 +546,76 @@ static bool32 CannotUsePartyBattleItem(u16 itemId, struct Pokemon* mon);
 // static const data
 #include "data/party_menu.h"
 
+// taken and updated from battle_pike.c
+static bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
+{
+    u16 ability = GetMonAbility(mon);
+    bool8 ret = FALSE;
+
+    if (ability == ABILITY_COMATOSE || ability == ABILITY_PURIFYING_SALT)
+        return TRUE;
+
+    switch (status)
+    {
+    case STATUS1_FREEZE:
+        if (ability == ABILITY_MAGMA_ARMOR)
+            ret = TRUE;
+        break;
+    case STATUS1_FROSTBITE:
+        if (ability == ABILITY_MAGMA_ARMOR)
+            ret = TRUE;
+        break;
+    case STATUS1_BURN:
+        if (ability == ABILITY_WATER_VEIL || ability == ABILITY_WATER_BUBBLE || ability == ABILITY_THERMAL_EXCHANGE)
+            ret = TRUE;
+        break;
+    case STATUS1_PARALYSIS:
+        if (ability == ABILITY_LIMBER)
+            ret = TRUE;
+        break;
+    case STATUS1_SLEEP:
+        if (ability == ABILITY_INSOMNIA || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_SWEET_VEIL)
+            ret = TRUE;
+        break;
+    case STATUS1_TOXIC_POISON:
+        if (ability == ABILITY_IMMUNITY || ability == ABILITY_PASTEL_VEIL)
+            ret = TRUE;
+        break;
+    }
+    return ret;
+}
+
+static bool8 DoesTypePreventStatus(u16 species, u32 status)
+{
+    bool8 ret = FALSE;
+
+    switch (status)
+    {
+    case STATUS1_TOXIC_POISON:
+        if (gSpeciesInfo[species].types[0] == TYPE_STEEL || gSpeciesInfo[species].types[0] == TYPE_POISON
+            || gSpeciesInfo[species].types[1] == TYPE_STEEL || gSpeciesInfo[species].types[1] == TYPE_POISON)
+            ret = TRUE;
+        break;
+    case STATUS1_FREEZE:
+    case STATUS1_FROSTBITE:
+        if (gSpeciesInfo[species].types[0] == TYPE_ICE || gSpeciesInfo[species].types[1] == TYPE_ICE)
+            ret = TRUE;
+        break;
+    case STATUS1_PARALYSIS:
+        if (gSpeciesInfo[species].types[0] == TYPE_GROUND || gSpeciesInfo[species].types[1] == TYPE_GROUND
+            || (B_PARALYZE_ELECTRIC >= GEN_6 && (gSpeciesInfo[species].types[0] == TYPE_ELECTRIC || gSpeciesInfo[species].types[1] == TYPE_ELECTRIC)))
+            ret = TRUE;
+        break;
+    case STATUS1_BURN:
+        if (gSpeciesInfo[species].types[0] == TYPE_FIRE || gSpeciesInfo[species].types[1] == TYPE_FIRE)
+            ret = TRUE;
+        break;
+    case STATUS1_SLEEP:
+        break;
+    }
+    return ret;
+}
+
 // code
 static void InitPartyMenu(u8 menuType, u8 layout, u8 partyAction, bool8 keepCursorPos, u8 messageId, TaskFunc task, MainCallback callback)
 {
@@ -8700,74 +8770,4 @@ u32 SetItemStatus (u16 item)
         return STATUS1_BURN;
 
     return STATUS1_NONE;
-}
-
-// taken and updated from battle_pike.c
-bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status)
-{
-    u16 ability = GetMonAbility(mon);
-    bool8 ret = FALSE;
-
-    if (ability == ABILITY_COMATOSE || ability == ABILITY_PURIFYING_SALT)
-        return TRUE;
-
-    switch (status)
-    {
-    case STATUS1_FREEZE:
-        if (ability == ABILITY_MAGMA_ARMOR)
-            ret = TRUE;
-        break;
-    case STATUS1_FROSTBITE:
-        if (ability == ABILITY_MAGMA_ARMOR)
-            ret = TRUE;
-        break;
-    case STATUS1_BURN:
-        if (ability == ABILITY_WATER_VEIL || ability == ABILITY_WATER_BUBBLE || ability == ABILITY_THERMAL_EXCHANGE)
-            ret = TRUE;
-        break;
-    case STATUS1_PARALYSIS:
-        if (ability == ABILITY_LIMBER)
-            ret = TRUE;
-        break;
-    case STATUS1_SLEEP:
-        if (ability == ABILITY_INSOMNIA || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_SWEET_VEIL)
-            ret = TRUE;
-        break;
-    case STATUS1_TOXIC_POISON:
-        if (ability == ABILITY_IMMUNITY || ability == ABILITY_PASTEL_VEIL)
-            ret = TRUE;
-        break;
-    }
-    return ret;
-}
-
-bool8 DoesTypePreventStatus(u16 species, u32 status)
-{
-    bool8 ret = FALSE;
-
-    switch (status)
-    {
-    case STATUS1_TOXIC_POISON:
-        if (gSpeciesInfo[species].types[0] == TYPE_STEEL || gSpeciesInfo[species].types[0] == TYPE_POISON
-            || gSpeciesInfo[species].types[1] == TYPE_STEEL || gSpeciesInfo[species].types[1] == TYPE_POISON)
-            ret = TRUE;
-        break;
-    case STATUS1_FREEZE:
-    case STATUS1_FROSTBITE:
-        if (gSpeciesInfo[species].types[0] == TYPE_ICE || gSpeciesInfo[species].types[1] == TYPE_ICE)
-            ret = TRUE;
-        break;
-    case STATUS1_PARALYSIS:
-        if (gSpeciesInfo[species].types[0] == TYPE_GROUND || gSpeciesInfo[species].types[1] == TYPE_GROUND
-            || (B_PARALYZE_ELECTRIC >= GEN_6 && (gSpeciesInfo[species].types[0] == TYPE_ELECTRIC || gSpeciesInfo[species].types[1] == TYPE_ELECTRIC)))
-            ret = TRUE;
-        break;
-    case STATUS1_BURN:
-        if (gSpeciesInfo[species].types[0] == TYPE_FIRE || gSpeciesInfo[species].types[1] == TYPE_FIRE)
-            ret = TRUE;
-        break;
-    case STATUS1_SLEEP:
-        break;
-    }
-    return ret;
 }

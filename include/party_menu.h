@@ -110,8 +110,6 @@ void BufferMoveDeleterNicknameAndMove(void);
 void GetNumMovesSelectedMonHas(void);
 void MoveDeleterChooseMoveToForget(void);
 u32 SetItemStatus (u16 item);
-bool8 DoesAbilityPreventStatus(struct Pokemon *mon, u32 status);
-bool8 DoesTypePreventStatus(u16 species, u32 status);
 
 u8 GetTutorMoves(struct Pokemon *pokemon, u16 *tutorMoves, u16 tutorMovesCapacity);
 u8 GetTutorMovesForSpecies(u16 species, u16 *tutorMoves, u16 tutorMovesCapacity);
