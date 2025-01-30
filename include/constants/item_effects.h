@@ -68,7 +68,7 @@
 #define ITEM6_ADD_ONE_EV    1
 #define ITEM6_RESET_EV      0
 
-// Colonising field 7 as it appears otherwise unused
+// Using field 7 despite other use, should only matter if you manage to use a berry with the fieldUseFunc of ItemUseOutOfBattle_StatusOrb or vice versa
 #define ITEM7_GIVE_BURN         0x1
 #define ITEM7_GIVE_POISON       0x2
 
