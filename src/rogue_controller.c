@@ -6000,6 +6000,12 @@ void RemoveMonAtSlot(u8 slot, bool8 keepItems, bool8 compactPartySlots)
             // Forget about re-equipping the held item
             gRogueRun.partyHeldItems[slot] = ITEM_NONE;
 
+            // Only push mons to safari if run is active
+            if(Rogue_IsRunActive() && !Rogue_IsVictoryLapActive())
+            {
+                RogueSafari_PushMon(&gPlayerParty[slot]);
+            }
+                   
             PushFaintedMonToLab(&gPlayerParty[slot]);
 
             ZeroMonData(&gPlayerParty[slot]);
