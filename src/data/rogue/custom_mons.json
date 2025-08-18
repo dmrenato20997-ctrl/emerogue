@@ -687,7 +687,7 @@
                 ]
             },
             {
-                "#if": "!defined(ROGUE_EXPANSION)",
+                "#if": "defined(ROGUE_EXPANSION)",
                 "species": "SPECIES_EEVEE",
                 "trainer": "Exotic",
                 "pokeball": "ITEM_ROGUE_BALL",
