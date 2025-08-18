@@ -726,25 +726,6 @@
             },
             {
                 "#if": "defined(ROGUE_EXPANSION)",
-                "species": "SPECIES_EEVEE",
-                "trainer": "Exotic",
-                "pokeball": "ITEM_ROGUE_BALL",
-                "held_item": "ITEM_NONE",
-                "is_default_spawn": true,
-                "moves":
-                [
-                    "MOVE_CEASELESS_EDGE",
-                    "MOVE_PSYCHIC_FANGS",
-                    "MOVE_STRENGTH_SAP",
-                    "MOVE_VICTORY_DANCE"
-                ],
-                "abilities":
-                [
-                    "ABILITY_FUR_COAT"
-                ]
-            },
-            {
-                "#if": "defined(ROGUE_EXPANSION)",
                 "species": "SPECIES_CHARMANDER",
                 "trainer": "Exotic",
                 "pokeball": "ITEM_ROGUE_BALL",
@@ -779,6 +760,25 @@
                 "abilities":
                 [
                     "ABILITY_DESOLATED_LAND"
+                ]
+            },
+            {
+                "#if": "defined(ROGUE_EXPANSION)",
+                "species": "SPECIES_LUGIA",
+                "trainer": "Exotic",
+                "pokeball": "ITEM_ROGUE_BALL",
+                "held_item": "ITEM_NONE",
+                "is_default_spawn": true,
+                "moves":
+                [
+                    "MOVE_HEAL_PULSE",
+                    "MOVE_OBLIVION_WING",
+                    "MOVE_GLITZY_GLOW",
+                    "MOVE_HYDRO_STEAM"
+                ],
+                "abilities":
+                [
+                    "ABILITY_SHADOW_SHIELD"
                 ]
             },
             {
