@@ -525,27 +525,6 @@
                 ]
             },
             {
-                "#if": "defined(ROGUE_EXPANSION)",
-                "species": "SPECIES_BURMY",
-                "trainer": "Exotic",
-                "pokeball": "ITEM_ROGUE_BALL",
-                "held_item": "ITEM_NONE",
-                "is_default_spawn": true,
-                "moves":
-                [
-                    "MOVE_TAIL_GLOW",
-                    "MOVE_SEED_FLARE",
-                    "MOVE_EARTH_POWER",
-                    "MOVE_SPRINGTIDE_STORM"
-                ],
-                "abilities":
-                [
-                    "ABILITY_GRASSY_SURGE",
-                    "ABILITY_BEADS_OF_RUIN"
-                ]
-            },
-
-            {
                 "#if": "!defined(ROGUE_EXPANSION)",
                 "species": "SPECIES_MISDREAVUS",
                 "trainer": "Exotic",
@@ -585,7 +564,6 @@
                     "ABILITY_EARTH_EATER"
                 ]
             },
-
             {
                 "#if": "!defined(ROGUE_EXPANSION)",
                 "species": "SPECIES_HOOTHOOT",
@@ -605,27 +583,6 @@
                     "ABILITY_COMPOUND_EYES"
                 ]
             },
-            {
-                "#if": "defined(ROGUE_EXPANSION)",
-                "species": "SPECIES_WATTREL",
-                "trainer": "Exotic",
-                "pokeball": "ITEM_ROGUE_BALL",
-                "held_item": "ITEM_NONE",
-                "is_default_spawn": true,
-                "moves":
-                [
-                    "MOVE_AURA_SPHERE",
-                    "MOVE_THUNDERCLAP",
-                    "MOVE_OBLIVION_WING",
-                    "MOVE_ELECTRO_SHOT"
-                ],
-                "abilities":
-                [
-                    "ABILITY_STORM_DRAIN",
-                    "ABILITY_LIGHTNING_ROD"
-                ]
-            },
-
             {
                 "#if": "!defined(ROGUE_EXPANSION)",
                 "species": "SPECIES_AZURILL",
@@ -666,7 +623,6 @@
                     "ABILITY_ELECTROMORPHOSIS"
                 ]
             },
-
             {
                 "#if": "!defined(ROGUE_EXPANSION)",
                 "species": "SPECIES_EKANS",
@@ -688,82 +644,6 @@
             },
             {
                 "#if": "defined(ROGUE_EXPANSION)",
-                "species": "SPECIES_EEVEE",
-                "trainer": "Exotic",
-                "pokeball": "ITEM_ROGUE_BALL",
-                "held_item": "ITEM_NONE",
-                "is_default_spawn": true,
-                "moves":
-                [
-                    "MOVE_CEASELESS_EDGE",
-                    "MOVE_PSYCHIC_FANGS",
-                    "MOVE_STRENGTH_SAP",
-                    "MOVE_VICTORY_DANCE"
-                ],
-                "abilities":
-                [
-                    "ABILITY_FUR_COAT"
-                ]
-            },
-            {
-                "#if": "defined(ROGUE_EXPANSION)",
-                "species": "SPECIES_RIOLU",
-                "trainer": "Exotic",
-                "pokeball": "ITEM_ROGUE_BALL",
-                "held_item": "ITEM_NONE",
-                "is_default_spawn": true,
-                "moves":
-                [
-                    "MOVE_SHIFT_GEAR",
-                    "MOVE_SUNSTEEL_STRIKE",
-                    "MOVE_SURGING_STRIKES",
-                    "MOVE_COLLISION_COURSE"
-                ],
-                "abilities":
-                [
-                    "ABILITY_ADAPTABILITY"
-                ]
-            },
-            {
-                "#if": "defined(ROGUE_EXPANSION)",
-                "species": "SPECIES_CHARMANDER",
-                "trainer": "Exotic",
-                "pokeball": "ITEM_ROGUE_BALL",
-                "held_item": "ITEM_NONE",
-                "is_default_spawn": true,
-                "moves":
-                [
-                    "MOVE_TAIL_GLOW",
-                    "MOVE_SEED_FLARE",
-                    "MOVE_OBLIVION_WING",
-                    "MOVE_ERUPTION"
-                ],
-                "abilities":
-                [
-                    "ABILITY_DESOLATE_LAND"
-                ]
-            },
-            {
-                "#if": "defined(ROGUE_EXPANSION)",
-                "species": "SPECIES_CHARCADET",
-                "trainer": "Exotic",
-                "pokeball": "ITEM_ROGUE_BALL",
-                "held_item": "ITEM_NONE",
-                "is_default_spawn": true,
-                "moves":
-                [
-                    "MOVE_SHIFT_GEAR",
-                    "MOVE_SPECTRAL_THIEF",
-                    "MOVE_BITTER_BLADE",
-                    "MOVE_SOLAR_BLADE"
-                ],
-                "abilities":
-                [
-                    "ABILITY_DESOLATE_LAND"
-                ]
-            },
-            {
-                "#if": "defined(ROGUE_EXPANSION)",
                 "species": "SPECIES_LUGIA",
                 "trainer": "Exotic",
                 "pokeball": "ITEM_ROGUE_BALL",
@@ -778,7 +658,26 @@
                 ],
                 "abilities":
                 [
-                    "ABILITY_SHADOW_SHIELD"
+                    "ABILITY_FUR_COAT"
+                ]
+            },
+            {
+                "#if": "defined(ROGUE_EXPANSION)",
+                "species": "SPECIES_ZERAORA",
+                "trainer": "Exotic",
+                "pokeball": "ITEM_ROGUE_BALL",
+                "held_item": "ITEM_NONE",
+                "is_default_spawn": true,
+                "moves":
+                [
+                    "MOVE_V_CREATE",
+                    "MOVE_LEECH_LIFE",
+                    "MOVE_PLASMA_FISTS",
+                    "MOVE_SUPERPOWER"
+                ],
+                "abilities":
+                [
+                    "ABILITY_CONTRARY"
                 ]
             },
             {
